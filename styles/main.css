@@ -1,0 +1,516 @@
+/* ===================================
+   CSS Reset & Base Styles
+   =================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Color palette - Trapper Keeper inspired */
+  --primary-blue: #2E5C8A;
+  --primary-red: #C84630;
+  --primary-yellow: #F4B942;
+  --primary-green: #4A7C59;
+  --primary-purple: #6B4E9E;
+
+  /* Neutrals */
+  --white: #FFFFFF;
+  --off-white: #F9F9F9;
+  --light-gray: #E5E5E5;
+  --medium-gray: #A0A0A0;
+  --dark-gray: #4A4A4A;
+  --black: #1A1A1A;
+
+  /* Semantic colors */
+  --bg-primary: var(--off-white);
+  --text-primary: var(--black);
+  --text-secondary: var(--dark-gray);
+  --border-color: var(--light-gray);
+  --incomplete-task-warning: #FF4444;
+
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+
+  /* Typography */
+  --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-size-base: 16px;
+  --font-size-sm: 14px;
+  --font-size-lg: 18px;
+  --font-size-xl: 24px;
+  --font-size-xxl: 32px;
+
+  /* Animation */
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.4s ease;
+  --transition-slow: 0.6s ease;
+
+  /* Z-index layers */
+  --z-base: 1;
+  --z-folder-frame: 10;
+  --z-controls: 20;
+  --z-modal: 100;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  background: var(--bg-primary);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* ===================================
+   View Management
+   =================================== */
+
+.view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-medium), visibility var(--transition-medium);
+}
+
+.view.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ===================================
+   BROWSE VIEW
+   =================================== */
+
+#browse-view {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.folder-carousel {
+  position: relative;
+  width: 90%;
+  max-width: 600px;
+  height: 70vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+}
+
+.folder-cover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.folder-cover:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+}
+
+/* Stack multiple folders behind current */
+.folder-cover:not(:first-child) {
+  transform: scale(0.95) translateY(20px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.folder-design {
+  width: 100%;
+  height: 100%;
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-purple) 100%);
+  border-radius: 12px;
+  color: var(--white);
+}
+
+.folder-title {
+  font-size: var(--font-size-xxl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.folder-description {
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+/* Browse controls */
+.browse-controls {
+  position: absolute;
+  bottom: var(--spacing-xl);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.nav-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  color: var(--white);
+  font-size: var(--font-size-xl);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background var(--transition-fast);
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.folder-counter {
+  color: var(--white);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ===================================
+   WORKING VIEW
+   =================================== */
+
+#working-view {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+}
+
+/* Folder frame (visual reference to folder design) */
+.folder-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: var(--z-folder-frame);
+}
+
+.frame-top,
+.frame-right,
+.frame-bottom,
+.frame-left {
+  position: absolute;
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-purple) 100%);
+}
+
+.frame-top {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+}
+
+.frame-right {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 8px;
+}
+
+.frame-bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+}
+
+.frame-left {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 8px;
+}
+
+.folder-tab {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-purple) 100%);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: 0 0 8px 8px;
+  color: var(--white);
+  font-weight: 600;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Content container */
+.content-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: var(--spacing-xl);
+  padding-top: calc(var(--spacing-xl) + 40px); /* Account for folder tab */
+  padding-bottom: calc(var(--spacing-xl) + 60px); /* Account for controls */
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: var(--z-base);
+}
+
+.content-section {
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+}
+
+.section-content {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* 1. Daily Note Section (read-only) */
+.daily-note-section {
+  background: linear-gradient(135deg, rgba(46, 92, 138, 0.05) 0%, rgba(107, 78, 158, 0.05) 100%);
+  border-color: var(--primary-blue);
+}
+
+.daily-note-content p {
+  margin-bottom: var(--spacing-sm);
+}
+
+/* 2. Tasks Section */
+.tasks-section {
+  /* Default styling from .content-section */
+}
+
+.task-list {
+  list-style: none;
+}
+
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+  border-radius: 4px;
+  transition: background var(--transition-fast);
+}
+
+.task-item:hover {
+  background: var(--off-white);
+}
+
+.task-checkbox {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.task-text {
+  flex-grow: 1;
+  color: var(--text-primary);
+}
+
+.task-item.completed .task-text {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* Incomplete tasks flash */
+.incomplete-tasks-flash {
+  margin-bottom: var(--spacing-sm);
+}
+
+.incomplete-task-warning {
+  background: var(--incomplete-task-warning);
+  color: var(--white);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: 4px;
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-xs);
+  animation: flash-warning 0.5s ease-in-out;
+}
+
+@keyframes flash-warning {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* 3. Writing Section */
+.writing-section {
+  min-height: 300px;
+}
+
+.writing-textarea {
+  width: 100%;
+  min-height: 250px;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  resize: vertical;
+  transition: border-color var(--transition-fast);
+}
+
+.writing-textarea:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(46, 92, 138, 0.1);
+}
+
+.writing-metadata {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--medium-gray);
+}
+
+/* 4. Supportive Section */
+.supportive-section {
+  background: var(--off-white);
+}
+
+/* Working controls */
+.working-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--white);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--spacing-lg);
+  z-index: var(--z-controls);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.control-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: 6px;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.close-btn {
+  background: var(--light-gray);
+  color: var(--text-primary);
+}
+
+.close-btn:hover {
+  background: var(--medium-gray);
+  color: var(--white);
+}
+
+.reset-day-btn {
+  background: var(--primary-blue);
+  color: var(--white);
+}
+
+.reset-day-btn:hover {
+  background: var(--primary-purple);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ===================================
+   Responsive Design
+   =================================== */
+
+@media (max-width: 768px) {
+  :root {
+    --spacing-xl: 2rem;
+    --font-size-xxl: 28px;
+  }
+
+  .content-container {
+    padding: var(--spacing-md);
+    padding-top: calc(var(--spacing-md) + 40px);
+    padding-bottom: calc(var(--spacing-md) + 60px);
+  }
+
+  .folder-carousel {
+    width: 95%;
+    height: 60vh;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --spacing-xl: 1.5rem;
+    --font-size-xxl: 24px;
+  }
+
+  .nav-btn {
+    width: 40px;
+    height: 40px;
+    font-size: var(--font-size-lg);
+  }
+}
+
+/* ===================================
+   Utility Classes
+   =================================== */
+
+.hidden {
+  display: none !important;
+}
+
+.loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* GSAP animation helper classes */
+.will-animate {
+  will-change: transform, opacity;
+}
